@@ -1,0 +1,61 @@
+.container{
+    height: 100vh;
+}
+
+.container .row .col{
+    position: relative;
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    border : 2px solid black;
+}
+
+.container .row .col img{
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    width:90px;
+    height: 90px;
+}
+
+
+.hidden{
+    visibility: hidden;
+}
+
+
+.win{
+    animation: bgcolor 0.5s ease-in-out 0s 1;
+    background-color: rgba(0, 0, 0, 0.368);
+    
+}
+
+@keyframes bgcolor {
+    0%{
+        background-color: #fff;
+        transform: scaleX(0);
+    }
+    100%{
+        background-color: rgba(0, 0, 0, 0.368);
+        transform: scaleX(1);
+    }
+}
+
+.winner{
+    position:fixed;
+    z-index:99;
+    top:20%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    animation: scale_up 0.5s ease-in-out 0s 1;
+}
+
+@keyframes scale_up {
+    0%{
+        top:50%;
+    }
+    100%{
+        top:20%;
+    }
+}
