@@ -1,5 +1,11 @@
+
+
+
 .container{
+    position: relative;
+    z-index: 55;
     height: 100vh;
+
 }
 
 .container .row .col{
@@ -58,4 +64,29 @@
     100%{
         top:20%;
     }
+}
+
+
+.parallax {
+    position: fixed;
+    z-index: -11;
+    
+}
+
+
+.x1 {
+    left:20%;
+    bottom:200px;
+    height: 200px;
+    width:200px;
+}
+
+
+.x2 {
+    top:250px;
+    right:400px;
+    height: 200px;
+    width:200px;
+    transform: rotate(30deg);
+    
 }

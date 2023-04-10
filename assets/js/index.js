@@ -403,6 +403,24 @@ const alphaBeta = (node,depth,alpha,beta,turn)=>{
 
 
 
+// Parallax
+document.addEventListener("mousemove",parallax);
+
+function parallax(e){
+    document.querySelectorAll('#parallax').forEach(function(move){
+        var movingVal=move.getAttribute("data-value");
+        var x= e.clientX * movingVal /100;
+        var y= e.clientY * movingVal /100;
+
+        console.log(x);
+        
+        
+        move.style.transform="translate("+ x +"px, "+y+"px) rotate(10deg)"
+        
+        move.style.animation="animate 12s linear infinite"
+    });
+}
+
 
 
 
