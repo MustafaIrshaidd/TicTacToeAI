@@ -13,6 +13,7 @@ const startGame=document.getElementById("startGame")
 var turn=0; // start with "O"
 var Arr
 var tie
+var AI=false
 
 
 console.log(id_1);
@@ -419,111 +420,123 @@ const checkWin=()=>{
 startGame.addEventListener("click",(e)=>{
     e.preventDefault();
     clear();
+
+    
+    
+
+    
+    
 })
 
 
 
-const alphaBeta = (board,depth,alpha,beta,turn)=>{
+// Function to evaluate the score of a board state
+function evaluate(board) {
+    // Check rows for winning condition
+    for (let i = 0; i < 9; i += 3) {
+      if (board[i] == board[i+1] && board[i] == board[i+2]) {
+        if (board[i] == 1) {
+          return 10;
+        } else if (board[i] == 2) {
+          return -10;
+        }
+      }
+    }
+  
+    // Check columns for winning condition
+    for (let i = 0; i < 3; i++) {
+      if (board[i] == board[i+3] && board[i] == board[i+6]) {
+        if (board[i] == 1) {
+          return 10;
+        } else if (board[i] == 2) {
+          return -10;
+        }
+      }
+    }
+  
+    // Check diagonals for winning condition
+    if (board[0] == board[4] && board[0] == board[8]) {
+      if (board[0] == 1) {
+        return 10;
+      } else if (board[0] == 2) {
+        return -10;
+      }
+    }
+  
+    if (board[2] == board[4] && board[2] == board[6]) {
+      if (board[2] == 1) {
+        return 10;
+      } else if (board[2] == 2) {
+        return -10;
+      }
+    }
+    // If no winner, return 0
+    return 0;
+  }
+
+function alphabeta(board, depth, alpha, beta, maximizingPlayer) {
+    if (depth == 0 || checkWin()) {
+      return evaluate(board);
+    }
+  
+    if (!maximizingPlayer) { //0=O
+      let maxEval = -Infinity;
+      for (let i = 0; i < 9; i++) {
+        if (board[i] == 0) {
+          board[i] = 2;
+          let eval = alphabeta(board, depth - 1, alpha, beta, 1);
+          board[i] = 0;
+          maxEval = Math.max(maxEval, eval);
+          alpha = Math.max(alpha, eval);
+          if (beta <= alpha) {
+            break;
+          }
+        }
+      }
+      return maxEval;
+    } else {    //1=X
+      let minEval = Infinity;
+      for (let i = 0; i < 9; i++) {
+        if (board[i] == 0) {
+          board[i] = 1;
+          let eval = alphabeta(board, depth - 1, alpha, beta, 0);
+          board[i] = 0;
+          minEval = Math.min(minEval, eval);
+          beta = Math.min(beta, eval);
+          if (beta <= alpha) {
+            break;
+          }
+        }
+      }
+      return minEval;
+    }
+  }
+
+ 
+function getBestMove(board, depth, maximizingPlayer) {
     
-
-    if (depth==0 || checkWin() ){
-        var arr=[]
-        return arr[-1,-1,evaluate()] 
-    }
-
-    var bestMove=[]
-    
-    if(turn==1){ // AI 'X'
-        let v = Number.NEGATIVE_INFINITY
-        for(var i = 0; i < 3; i++) {
-            for(var j = 0; j < 3; j++) {
-                
-            if(board[i][j]==0){
-                
-                board[i][j]=1;
-                var score=alphaBeta(board,depth-1,0)
-                board[i][j]=0
-                if(score>v){
-                    v=score
-                }
-            }    
-            }
+    let bestScore = maximizingPlayer ? -Infinity : Infinity;
+    let move = null;
+    for (let i = 0; i < 9; i++) {
+      if (board[i] == 0) {
+        board[i] = maximizingPlayer ? 1 : 2;
+        let score = alphabeta(board, depth, -Infinity, Infinity, !maximizingPlayer);
+        board[i] = 0;
+        if (maximizingPlayer) {
+          if (score > bestScore) {
+            bestScore = score;
+            move = i;
+          }
+        } else {
+          if (score < bestScore) {
+            bestScore = score;
+            move = i;
+          }
         }
-        return v
+      }
     }
-    else{       // Human 'O'
-        let v = Number.POSITIVE_INFINITY
-        for(var i = 0; i < 3; i++) {
-            for(var j = 0; j < 3; j++) {
-            if(board[i][j]==0){
-                board[i][j]=2;
-                var score=alphaBeta(board,depth-1,1)
-                board[i][j]=0
-                if(score<v){
-                    v=score
-                }
-            }    
-            }
-        }
-        return v
-    }
-}
-
- function haveTheSameValueAndNotEmpty(x, y, z) {
-    if(x == y && x == z && x != 0) {
-        return true;
-    }
-    return false;
-}
-
-function checkWiner( board) {
-    //  2: X winer
-    // -2: O winer
-    
-    //  2: X winner
-    // -2: O winner
-    //  0: Tie
-    //  1: No winer
-    //  1: No winner
-
-    // For rows
-    for(var i = 0; i < 3; i++) {
-        if(equal3(board[i][0], board[i][1], board[i][2])) {
-        if(haveTheSameValueAndNotEmpty(board[i][0], board[i][1], board[i][2])) {
-            return board[i][0] == 'X' ? 2 : -2;
-        }
-    }
-    }
-
-    // For cols
-    for(var i = 0; i < 3; i++) {
-        if(equal3(board[0][i], board[1][i], board[2][i])) {
-        if(haveTheSameValueAndNotEmpty(board[0][i], board[1][i], board[2][i])) {
-            return board[0][i] == 'X' ? 2 : -2;
-        }
-    }
-    }
-
-    // Diameter 1
-    if(equal3(board[0][0], board[1][1], board[2][2])) {
-    if(haveTheSameValueAndNotEmpty(board[0][0], board[1][1], board[2][2])) {
-        return board[0][0] == 'X' ? 2 : -2;
-    }
-    }
-
-    // Diameter 2
-    if(equal3(board[2][0], board[1][1], board[0][2])) {
-    if(haveTheSameValueAndNotEmpty(board[2][0], board[1][1], board[0][2])) {
-        return board[2][0] == 'X' ? 2 : -2;
-    }
-    }
-}
-
-
-
-
-
-
+    return move;
+  }  
 
 
 
@@ -566,7 +579,50 @@ DarkMode.addEventListener("change",(e)=>{
 
 
 
+//AI Button Toggeled
+
+const AI_CHECK=document.getElementById("AI");
 
 
+AI_CHECK.addEventListener("change",(e)=>{
+    e.preventDefault();
+    var element = document.body;
+    if(AI_CHECK.checked==true){
+        bestMove=getBestMove(Arr,100,0)
+        console.log(bestMove)
+            switch (bestMove){
+                case 0:
+                    id_1.click()
+                    break
+                case 1:
+                    id_2.click()
+                    break
+                case 2:
+                    id_3.click()
+                    break
+                case 3:
+                    id_4.click()
+                    break
+                case 4:
+                    id_5.click()
+                    break
+                case 5:
+                    id_6.click()
+                    break
+                case 6:
+                    id_7.click()
+                    break
+                case 7:
+                    id_8.click()
+                    break
+                case 8:
+                    id_9.click()
+                    break
+            }   
+    }
+    else{
+        AI=false
+    }
+})
 
 
