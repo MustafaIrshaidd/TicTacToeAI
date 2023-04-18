@@ -13,7 +13,7 @@
     width: 100px;
     height: 100px;
     cursor: pointer;
-    border : 2px solid black;
+    border : 2px solid;
 }
 
 .container .row .col img{
@@ -75,18 +75,25 @@
 
 
 .x1 {
-    left:20%;
-    bottom:200px;
-    height: 200px;
+    left:250px;
+    bottom:250px;
+    height:200px;
     width:200px;
 }
 
 
 .x2 {
     top:250px;
-    right:400px;
+    right:250px;
     height: 200px;
     width:200px;
     transform: rotate(30deg);
     
+}
+
+
+.dark-mode {
+    background-color: black;
+    color: white;
+    border-color:white !important;
 }

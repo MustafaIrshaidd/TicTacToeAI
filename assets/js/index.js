@@ -269,6 +269,8 @@ const gameFinished=(x)=>{
             id_9.classList.add("win")
         
             fillArray()
+        } else{
+            return true
         }
     
     }
@@ -279,7 +281,10 @@ const gameFinished=(x)=>{
             id_5.classList.add("win")
             id_7.classList.add("win")
             fillArray()
-        }  
+        } else{
+            return true
+        }
+        
     }
 
     else if(Arr[0]==1 && Arr[3]==1 && Arr[6]==1 || Arr[0]==2 && Arr[3]==2 && Arr[6]==2){
@@ -289,6 +294,8 @@ const gameFinished=(x)=>{
             id_4.classList.add("win")
             id_7.classList.add("win")
             fillArray()
+        } else{
+            return true
         }
         
     }
@@ -299,6 +306,8 @@ const gameFinished=(x)=>{
             id_5.classList.add("win")
             id_8.classList.add("win")
             fillArray()
+        } else{
+            return true
         }
         
     }
@@ -309,6 +318,8 @@ const gameFinished=(x)=>{
             id_6.classList.add("win")
             id_9.classList.add("win")
             fillArray()
+        } else{
+            return true
         }
         
     }
@@ -320,6 +331,8 @@ const gameFinished=(x)=>{
             id_2.classList.add("win")
             id_3.classList.add("win")
             fillArray()
+        } else{
+            return true
         }
         
     }
@@ -330,6 +343,8 @@ const gameFinished=(x)=>{
             id_5.classList.add("win")
             id_6.classList.add("win")
             fillArray()
+        } else{
+            return true
         }
         
     }
@@ -340,12 +355,20 @@ const gameFinished=(x)=>{
             id_8.classList.add("win")
             id_9.classList.add("win")
             fillArray()
+        } else{
+            return true
         }
         
     }
     else{
-        console.log("still on")
-        return
+        if(typeof x=="undefined"){
+            
+            console.log("still on")
+            return
+        } 
+        else{
+            return false
+        }
     } 
     if(tie==true){
         winner.children[0].innerHTML="It's A Tie"
@@ -361,6 +384,38 @@ const gameFinished=(x)=>{
 }
 
 
+const checkWin=()=>{
+    if(Arr[0]==1 && Arr[4]==1 && Arr[8]==1 || Arr[0]==2 && Arr[4]==2 && Arr[8]==2 ){
+        return true;
+    }
+    else if(Arr[2]==1 && Arr[4]==1 && Arr[6]==1 || Arr[2]==2 && Arr[4]==2 && Arr[6]==2){
+        return true;
+    }
+
+    else if(Arr[0]==1 && Arr[3]==1 && Arr[6]==1 || Arr[0]==2 && Arr[3]==2 && Arr[6]==2){
+        return true;
+    }
+    else if(Arr[1]==1 && Arr[4]==1 && Arr[7]==1 || Arr[1]==2 && Arr[4]==2 && Arr[7]==2){
+        return true;
+    }
+    else if(Arr[2]==1 && Arr[5]==1 && Arr[8]==1 || Arr[2]==2 && Arr[5]==2 && Arr[8]==2){
+        return true;
+    }
+    
+    else if(Arr[0]==1 && Arr[1]==1 && Arr[2]==1 || Arr[0]==2 && Arr[1]==2 && Arr[2]==2){
+        return true;
+    }
+    else if(Arr[3]==1 && Arr[4]==1 && Arr[5]==1 || Arr[3]==2 && Arr[4]==2 && Arr[5]==2){
+        return true;
+    }
+    else if(Arr[6]==1 && Arr[7]==1 && Arr[8]==1 || Arr[6]==2 && Arr[7]==2 && Arr[8]==2){
+        return true;
+    }
+    else{
+        return false;
+    } 
+}
+
 startGame.addEventListener("click",(e)=>{
     e.preventDefault();
     clear();
@@ -368,38 +423,107 @@ startGame.addEventListener("click",(e)=>{
 
 
 
-const alphaBeta = (node,depth,alpha,beta,turn)=>{
-    if (depth==0 || node==0){
-        return herustic()
+const alphaBeta = (board,depth,alpha,beta,turn)=>{
+    
+
+    if (depth==0 || checkWin() ){
+        var arr=[]
+        return arr[-1,-1,evaluate()] 
     }
 
+    var bestMove=[]
+    
     if(turn==1){ // AI 'X'
         let v = Number.NEGATIVE_INFINITY
-        Arr.map((val,index)=>{
-            if(val==0){
-                v=Math.max(v,alphaBeta(index,depth-1,alpha,beta,2))
-                alpha=Math.max(alpha,v)
-                if(beta<=alpha){
-                    return
+        for(var i = 0; i < 3; i++) {
+            for(var j = 0; j < 3; j++) {
+                
+            if(board[i][j]==0){
+                
+                board[i][j]=1;
+                var score=alphaBeta(board,depth-1,0)
+                board[i][j]=0
+                if(score>v){
+                    v=score
                 }
             }    
-        })
+            }
+        }
         return v
     }
     else{       // Human 'O'
         let v = Number.POSITIVE_INFINITY
-        Arr.map((val,index)=>{
-            if(val==0){
-                v=Math.min(v,alphaBeta(index,depth-1,alpha,beta,1))
-                beta=Math.min(beta,v)
-                if(beta<=alpha){
-                    return
+        for(var i = 0; i < 3; i++) {
+            for(var j = 0; j < 3; j++) {
+            if(board[i][j]==0){
+                board[i][j]=2;
+                var score=alphaBeta(board,depth-1,1)
+                board[i][j]=0
+                if(score<v){
+                    v=score
                 }
             }    
-        })
+            }
+        }
         return v
     }
 }
+
+ function haveTheSameValueAndNotEmpty(x, y, z) {
+    if(x == y && x == z && x != 0) {
+        return true;
+    }
+    return false;
+}
+
+function checkWiner( board) {
+    //  2: X winer
+    // -2: O winer
+    
+    //  2: X winner
+    // -2: O winner
+    //  0: Tie
+    //  1: No winer
+    //  1: No winner
+
+    // For rows
+    for(var i = 0; i < 3; i++) {
+        if(equal3(board[i][0], board[i][1], board[i][2])) {
+        if(haveTheSameValueAndNotEmpty(board[i][0], board[i][1], board[i][2])) {
+            return board[i][0] == 'X' ? 2 : -2;
+        }
+    }
+    }
+
+    // For cols
+    for(var i = 0; i < 3; i++) {
+        if(equal3(board[0][i], board[1][i], board[2][i])) {
+        if(haveTheSameValueAndNotEmpty(board[0][i], board[1][i], board[2][i])) {
+            return board[0][i] == 'X' ? 2 : -2;
+        }
+    }
+    }
+
+    // Diameter 1
+    if(equal3(board[0][0], board[1][1], board[2][2])) {
+    if(haveTheSameValueAndNotEmpty(board[0][0], board[1][1], board[2][2])) {
+        return board[0][0] == 'X' ? 2 : -2;
+    }
+    }
+
+    // Diameter 2
+    if(equal3(board[2][0], board[1][1], board[0][2])) {
+    if(haveTheSameValueAndNotEmpty(board[2][0], board[1][1], board[0][2])) {
+        return board[2][0] == 'X' ? 2 : -2;
+    }
+    }
+}
+
+
+
+
+
+
 
 
 
@@ -409,21 +533,36 @@ document.addEventListener("mousemove",parallax);
 function parallax(e){
     document.querySelectorAll('#parallax').forEach(function(move){
         var movingVal=move.getAttribute("data-value");
-        var x= e.clientX * movingVal /100;
-        var y= e.clientY * movingVal /100;
-
-        console.log(x);
-        
+        if(movingVal==3){
+            var x= -(e.clientX * movingVal /100);
+            var y= -(e.clientY * movingVal /100);
+        }
+        else{
+            var x= e.clientX * movingVal /100;
+            var y= e.clientY * movingVal /100;
+        }
         
         move.style.transform="translate("+ x +"px, "+y+"px) rotate(10deg)"
-        
         move.style.animation="animate 12s linear infinite"
     });
 }
 
 
+// Dark mode
+
+const DarkMode=document.getElementById("DarkMode");
 
 
+DarkMode.addEventListener("change",(e)=>{
+    e.preventDefault();
+    var element = document.body;
+    if(DarkMode.checked==true){
+        element.classList.toggle("dark-mode");
+    }
+    else{
+        element.classList.toggle("dark-mode");
+    }
+})
 
 
 
