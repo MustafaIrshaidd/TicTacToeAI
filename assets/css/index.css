@@ -1,99 +1,93 @@
-
-
-
-.container{
-    position: relative;
-    z-index: 55;
-    height: 100vh;
-
+.container {
+  position: relative;
+  z-index: 55;
+  height: 100vh;
 }
 
-.container .row .col{
-    position: relative;
-    width: 100px;
-    height: 100px;
-    cursor: pointer;
-    border : 2px solid;
+.container .row .col {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
+  border: 2px solid;
 }
 
-.container .row .col img{
-    position: absolute;
-    top:50%;
-    left:50%;
-    transform: translate(-50%,-50%);
-    width:90px;
-    height: 90px;
+.container .row .col img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90px;
+  height: 90px;
 }
 
-
-.hidden{
-    visibility: hidden;
+.hidden {
+  visibility: hidden;
 }
 
-
-.win{
-    animation: bgcolor 0.5s ease-in-out 0s 1;
-    background-color: rgba(0, 0, 0, 0.368);
-    
+.win {
+  animation: bgcolor 0.5s ease-in-out 0s 1;
+  background-color: rgba(0, 0, 0, 0.368);
 }
 
 @keyframes bgcolor {
-    0%{
-        background-color: #fff;
-        transform: scaleX(0);
-    }
-    100%{
-        background-color: rgba(0, 0, 0, 0.368);
-        transform: scaleX(1);
-    }
+  0% {
+    background-color: #fff;
+    transform: scaleX(0);
+  }
+  100% {
+    background-color: rgba(0, 0, 0, 0.368);
+    transform: scaleX(1);
+  }
 }
 
-.winner{
-    position:fixed;
-    z-index:99;
-    top:20%;
-    left:50%;
-    transform: translate(-50%,-50%);
-    animation: scale_up 0.5s ease-in-out 0s 1;
+.winner {
+  position: fixed;
+  z-index: 99;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: scale_up 0.5s ease-in-out 0s 1;
 }
 
 @keyframes scale_up {
-    0%{
-        top:50%;
-    }
-    100%{
-        top:20%;
-    }
+  0% {
+    top: 50%;
+  }
+  100% {
+    top: 20%;
+  }
 }
-
 
 .parallax {
-    position: fixed;
-    z-index: -11;
-    
+  position: fixed;
+  z-index: -11;
 }
-
 
 .x1 {
-    left:250px;
-    bottom:250px;
-    height:200px;
-    width:200px;
+  left: 250px;
+  bottom: 250px;
+  height: 200px;
+  width: 200px;
 }
-
 
 .x2 {
-    top:250px;
-    right:250px;
-    height: 200px;
-    width:200px;
-    transform: rotate(30deg);
-    
+  top: 250px;
+  right: 250px;
+  height: 200px;
+  width: 200px;
+  transform: rotate(30deg);
 }
 
-
 .dark-mode {
-    background-color: black;
-    color: white;
-    border-color:white !important;
+  background-color: black;
+  color: white;
+  border-color: white !important;
+}
+
+@media (max-width: 1307px) {
+  .x1,
+  .x2 {
+    display: none;
+  }
 }
