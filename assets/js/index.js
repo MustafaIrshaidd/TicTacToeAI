@@ -19,7 +19,7 @@ let counter = 0;
 console.log(id_1);
 
 function letAIChoose() {
-  bestMove = getBestMove([...Arr], 2, 1);
+  bestMove = getBestMove(Arr, 6, 0);
 
   console.log(bestMove);
   switch (bestMove) {
@@ -484,9 +484,9 @@ function evaluate(board) {
   for (let i = 0; i < 9; i += 3) {
     if (board[i] == board[i + 1] && board[i] == board[i + 2]) {
       if (board[i] == 1) {
-        return -10;
-      } else if (board[i] == 2) {
         return 10;
+      } else if (board[i] == 2) {
+        return -10;
       }
     }
   }
@@ -495,9 +495,9 @@ function evaluate(board) {
   for (let i = 0; i < 3; i++) {
     if (board[i] == board[i + 3] && board[i] == board[i + 6]) {
       if (board[i] == 1) {
-        return -10;
-      } else if (board[i] == 2) {
         return 10;
+      } else if (board[i] == 2) {
+        return -10;
       }
     }
   }
@@ -505,96 +505,123 @@ function evaluate(board) {
   // Check diagonals for winning condition
   if (board[0] == board[4] && board[0] == board[8]) {
     if (board[0] == 1) {
-      return -10;
-    } else if (board[0] == 2) {
       return 10;
+    } else if (board[0] == 2) {
+      return -10;
     }
   }
 
   if (board[2] == board[4] && board[2] == board[6]) {
     if (board[2] == 1) {
-      return -10;
-    } else if (board[2] == 2) {
       return 10;
+    } else if (board[2] == 2) {
+      return -10;
     }
   }
+
+  for (let i = 0; i < 9; i++) {
+    if (board[i] == 0) return 5;
+  }
   // If no winner, return 0
+
+  // If tie return 5
   return 0;
 }
 
-function alphabeta(board, depth, alpha, beta, maximizingPlayer) {
+function alphabeta(board, depth, alpha, beta, maximizingPlayer, firstTurn) {
   if (depth == 0 || checkWin()) {
     // console.log("Anchor: ", board, evaluate(board));
 
-    return evaluate(board);
+    return evaluate([...board]);
   }
 
+  let index;
   if (maximizingPlayer) {
-    //0
+    //X
     let maxEval = -Infinity;
     for (let i = 0; i < 9; i++) {
       if (board[i] == 0) {
-        board[i] = 2;
-        let eval = alphabeta(board, depth - 1, alpha, beta, 0);
+        board[i] = 1;
+        let eval = alphabeta(board, depth - 1, alpha, beta, false, false);
+        console.log(i, "maxBefore", maxEval, [...board]);
         board[i] = 0;
         maxEval = Math.max(maxEval, eval);
-        alpha = Math.max(alpha, maxEval);
+        console.log(i, "maxAfter", maxEval, [...board]);
+
+        // alpha = Math.max(alpha, maxEval);
+        if (maxEval > alpha) {
+          alpha = maxEval;
+          index = i;
+        }
         // console.log("AI: ", board, i, maxEval, eval);
         if (beta <= alpha) {
           break;
         }
       }
     }
+
+    if (firstTurn) return index;
     return maxEval;
   } else {
-    //X
+    //O
     let minEval = Infinity;
     for (let i = 0; i < 9; i++) {
       if (board[i] == 0) {
-        board[i] = 1;
-        let eval = alphabeta(board, depth - 1, alpha, beta, 1);
+        board[i] = 2;
+        let eval = alphabeta(board, depth - 1, alpha, beta, true, false);
+        console.log(i, "minBefore", minEval, [...board]);
         board[i] = 0;
         minEval = Math.min(minEval, eval);
-        beta = Math.min(beta, minEval);
+        console.log(i, "minAfter", minEval, [...board]);
+
+        // beta = Math.min(beta, minEval);
+        if (minEval < beta) {
+          beta = minEval;
+          index = i;
+        }
         // console.log("Human: ", board, i, minEval, eval);
         if (beta <= alpha) {
           break;
         }
       }
     }
+
+    if (firstTurn) return index;
     return minEval;
   }
 }
 
 function getBestMove(board, depth, maximizingPlayer) {
-  let bestScore = maximizingPlayer ? -Infinity : Infinity;
-  let move = null;
-  for (let i = 0; i < 9; i++) {
-    if (board[i] == 0) {
-      board[i] = !maximizingPlayer ? 1 : 2;
-      let score = alphabeta(
-        board,
-        depth,
-        -Infinity,
-        Infinity,
-        maximizingPlayer,
-      );
-      console.log("Best Move: ", i, score);
-      board[i] = 0;
-      if (maximizingPlayer) {
-        if (score > bestScore) {
-          bestScore = score;
-          move = i;
-        }
-      } else {
-        if (score < bestScore) {
-          bestScore = score;
-          move = i;
-        }
-      }
-    }
-  }
-  return move;
+  let score = alphabeta(board, depth, -Infinity, Infinity, false, true);
+  return score;
+  // let bestScore = maximizingPlayer ? -Infinity : Infinity;
+  // let move = null;
+  // for (let i = 0; i < 9; i++) {
+  //   if (board[i] == 0) {
+  //     board[i] = !maximizingPlayer ? 1 : 2;
+  //     let score = alphabeta(
+  //       board,
+  //       depth,
+  //       -Infinity,
+  //       Infinity,
+  //       maximizingPlayer,
+  //     );
+  //     console.log("Best Move: ", i, score);
+  //     board[i] = 0;
+  //     if (maximizingPlayer) {
+  //       if (score > bestScore) {
+  //         bestScore = score;
+  //         move = i;
+  //       }
+  //     } else {
+  //       if (score < bestScore) {
+  //         bestScore = score;
+  //         move = i;
+  //       }
+  //     }
+  //   }
+  // }
+  // return move;
 }
 
 // Parallax
